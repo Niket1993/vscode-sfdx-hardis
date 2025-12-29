@@ -1,8 +1,10 @@
 <template>
+  <!-- Main container with light theme background -->
   <div class="slds-p-around_x-small blue-back">
     <lightning-card title="Sfdx-Hardis Metadata Retriever" icon-name="custom:custom63">
-      <!-- Selected Org and Query Mode in Card Header -->
+      <!-- Header: Org selector and query mode toggles -->
       <div slot="actions" class="slds-grid slds-grid_align-end slds-gutters_small slds-grid_vertical-align-start">
+        <!-- Org dropdown selector -->
         <div class="slds-col slds-no-flex slds-align-top">
           <fieldset class="slds-form-element" role="group" aria-label="Selected Org">
             <legend class="slds-form-element__legend slds-form-element__label" part=""></legend>
@@ -18,6 +20,7 @@
             </div>
           </fieldset>
         </div>
+        <!-- Query mode selector: Recent Changes vs All Metadata -->
         <div class="slds-col slds-no-flex slds-align-top">
           <lightning-radio-group
             options={queryModeOptions}
@@ -28,10 +31,10 @@
         </div>
       </div>
 
-      <!-- Filters Section -->
+      <!-- Filters panel with search criteria inputs -->
       <div class="slds-p-around_x-small">
         <div class="slds-grid slds-gutters_x-small slds-wrap">
-          <!-- Metadata Type Filter -->
+          <!-- Metadata Type dropdown filter -->
           <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-6">
             <lightning-combobox
               label="Metadata Type"
@@ -43,7 +46,7 @@
             ></lightning-combobox>
           </div>
 
-          <!-- Metadata Name Filter -->
+          <!-- Metadata Name text filter -->
           <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-6">
             <lightning-input
               label="Metadata Name"
@@ -53,7 +56,7 @@
             ></lightning-input>
           </div>
 
-          <!-- Last Updated By Filter -->
+          <!-- Last Updated By text filter -->
           <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-6">
             <lightning-input
               label="Last Updated By"
@@ -63,7 +66,7 @@
             ></lightning-input>
           </div>
 
-          <!-- Date From Filter -->
+          <!-- Start date range filter -->
           <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-6">
             <lightning-input
               type="date"
@@ -73,7 +76,7 @@
             ></lightning-input>
           </div>
 
-          <!-- Date To Filter -->
+          <!-- End date range filter -->
           <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-6">
             <lightning-input
               type="date"
@@ -83,7 +86,7 @@
             ></lightning-input>
           </div>
 
-          <!-- Package Filter -->
+          <!-- Package dropdown filter -->
           <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-6">
             <lightning-combobox
               label="Package"
@@ -96,9 +99,10 @@
 
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action buttons toolbar -->
         <div class="slds-m-top_x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
           <div class="slds-col">
+            <!-- Execute search button -->
             <lightning-button
               variant="brand"
               label="Search Metadata"
@@ -108,6 +112,7 @@
               class="slds-m-right_small"
               size="small"
             ></lightning-button>
+            <!-- Reset all filters button -->
             <lightning-button
               variant="neutral"
               label="Clear Filters"
@@ -116,6 +121,7 @@
               size="small"
               class="slds-m-right_small"
             ></lightning-button>
+            <!-- Open retrieve history folder -->
             <lightning-button
               variant="neutral"
               label="Retrieve History"
@@ -124,6 +130,7 @@
               size="small"
             ></lightning-button>
           </div>
+          <!-- Local file check toggle -->
           <div class="slds-col slds-no-flex slds-form-element slds-form-element_compact">
             <div class="slds-form-element__control slds-grid slds-grid_vertical-align-center" style="align-items:center;">
               <div class="slds-m-right_x-small slds-text-body_regular slds-align-middle">Check local files</div>
@@ -142,14 +149,14 @@
         </div>
       </div>
 
-      <!-- Loading Spinner -->
+      <!-- Loading spinner (shown while fetching metadata) -->
       <template lwc:if={isLoading}>
         <div class="slds-p-around_small slds-text-align_center">
           <lightning-spinner alternative-text="Loading metadata..." size="medium"></lightning-spinner>
         </div>
       </template>
 
-      <!-- Error Message -->
+      <!-- Error alert (shown on query failure) -->
       <template lwc:if={hasError}>
         <div class="slds-p-around_small">
           <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
@@ -160,7 +167,7 @@
         </div>
       </template>
 
-      <!-- Initial Prompt (before any search) -->
+      <!-- Initial prompt (shown before first search) -->
       <template lwc:if={hasSearchedd}>
         <div class="slds-p-around_small slds-text-align_center slds-text-color_weak">
           <h3 class="slds-text-heading_medium">No search performed yet</h3>
@@ -168,17 +175,18 @@
         </div>
       </template>
 
-       <!-- Results Datatable (visible when there are results OR when metadata was loaded from backend)
-         This keeps the "search in results" input and action buttons visible even when client-side
-         filters temporarily remove all displayed rows. -->
-       <template lwc:if={showResultsArea}>
+      <!-- Results area: Search in results + datatable with bulk actions -->
+      <template lwc:if={showResultsArea}>
         <div class="slds-p-around_x-small">
+          <!-- Result count + search filter + bulk actions toolbar -->
           <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
+            <!-- Result count display -->
             <div class="slds-col slds-no-flex">
               <span class="slds-text-title_caps slds-text-color_weak">
                 {filteredMetadata.length} result(s) found
               </span>
             </div>
+            <!-- Client-side search/filter in results -->
             <div class="slds-col slds-grow slds-p-left_small slds-p-right_small">
               <lightning-input
                 value={searchTerm}
@@ -188,7 +196,9 @@
                 icon-name="utility:clear"
               ></lightning-input>
             </div>
+            <!-- Bulk actions: Package selector + Retrieve button (shown when rows selected) -->
             <template lwc:if={hasSelectedRows}>
+                <!-- Local package selector for retrieve destination -->
                 <template lwc:if={showLocalPackageSelector}>
                     <div class="slds-col slds-no-flex">
                       <lightning-combobox
@@ -203,6 +213,7 @@
                       ></lightning-combobox>
                     </div>
                 </template>
+                <!-- Bulk retrieve selected rows -->
                 <div class="slds-col slds-no-flex">
                     <lightning-button
                       data-id="retrieve-button"
@@ -215,6 +226,7 @@
                   </div>
             </template>
           </div>
+          <!-- Sortable, selectable results table -->
           <lightning-datatable
             key-field="uniqueKey"
             data={filteredMetadata}
@@ -230,7 +242,7 @@
         </div>
       </template>
 
-      <!-- Floating retrieve button (shown when main retrieve button is off-screen) -->
+      <!-- Floating retrieve button (sticky footer when scrolled) -->
       <div class="retrieve-floating" data-id="retrieve-button-floating">
         <lightning-button
           variant="success"
@@ -240,7 +252,7 @@
         ></lightning-button>
       </div>
 
-      <!-- Hidden feature modal (obfuscated identifiers) -->
+      <!-- Feature modal - hidden special message -->
       <template lwc:if={showFeature}>
         <section role="dialog" tabindex="-1" data-feature data-feature-id={featureId} aria-modal="true">
           <div data-feature-backdrop onclick={hideFeature}></div>
@@ -255,7 +267,7 @@
         </section>
       </template>
 
-      <!-- No Results Message -->
+      <!-- Empty results message (shown when search completes with no matches) -->
       <template lwc:if={noResults}>
         <div class="slds-p-around_small slds-text-align_center">
           <div class="slds-illustration slds-illustration_small">
