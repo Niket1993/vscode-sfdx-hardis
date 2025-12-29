@@ -53,6 +53,22 @@ export default class MetadataRetriever extends LightningElement {
   cachedDateFrom = null;
   cachedDateTo = null;
 
+
+
+
+
+
+// ======================================== New Changes =========================================
+
+get hasSearchedd() {   
+  return ! this.hasSearched;
+ }
+
+
+
+
+// ======================================== New Changes End =========================================
+
   // Datatable columns - computed based on mode
   get columns() {
     // Build columns step by step so we can insert the Change icon column

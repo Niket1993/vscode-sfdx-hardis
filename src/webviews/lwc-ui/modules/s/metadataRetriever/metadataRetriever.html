@@ -143,14 +143,14 @@
       </div>
 
       <!-- Loading Spinner -->
-      <template if:true={isLoading}>
+      <template lwc:if={isLoading}>
         <div class="slds-p-around_small slds-text-align_center">
           <lightning-spinner alternative-text="Loading metadata..." size="medium"></lightning-spinner>
         </div>
       </template>
 
       <!-- Error Message -->
-      <template if:true={hasError}>
+      <template lwc:if={hasError}>
         <div class="slds-p-around_small">
           <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
             <span class="slds-assistive-text">error</span>
@@ -161,7 +161,7 @@
       </template>
 
       <!-- Initial Prompt (before any search) -->
-      <template if:false={hasSearched}>
+      <template lwc:if={hasSearchedd}>
         <div class="slds-p-around_small slds-text-align_center slds-text-color_weak">
           <h3 class="slds-text-heading_medium">No search performed yet</h3>
           <p>Click the <strong>Search</strong> button to query metadata for the selected org.</p>
@@ -171,7 +171,7 @@
        <!-- Results Datatable (visible when there are results OR when metadata was loaded from backend)
          This keeps the "search in results" input and action buttons visible even when client-side
          filters temporarily remove all displayed rows. -->
-       <template if:true={showResultsArea}>
+       <template lwc:if={showResultsArea}>
         <div class="slds-p-around_x-small">
           <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_small">
             <div class="slds-col slds-no-flex">
@@ -188,8 +188,8 @@
                 icon-name="utility:clear"
               ></lightning-input>
             </div>
-            <template if:true={hasSelectedRows}>
-                <template if:true={showLocalPackageSelector}>
+            <template lwc:if={hasSelectedRows}>
+                <template lwc:if={showLocalPackageSelector}>
                     <div class="slds-col slds-no-flex">
                       <lightning-combobox
                         label="Local package"
@@ -241,7 +241,7 @@
       </div>
 
       <!-- Hidden feature modal (obfuscated identifiers) -->
-      <template if:true={showFeature}>
+      <template lwc:if={showFeature}>
         <section role="dialog" tabindex="-1" data-feature data-feature-id={featureId} aria-modal="true">
           <div data-feature-backdrop onclick={hideFeature}></div>
           <div data-feature-content>
@@ -256,7 +256,7 @@
       </template>
 
       <!-- No Results Message -->
-      <template if:true={noResults}>
+      <template lwc:if={noResults}>
         <div class="slds-p-around_small slds-text-align_center">
           <div class="slds-illustration slds-illustration_small">
             <div class="slds-text-color_weak">
